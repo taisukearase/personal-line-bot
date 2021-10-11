@@ -1,3 +1,6 @@
+# ignore all files
 **/**
-!/src
+
+# except the extensions
+!/src/**
 !appsscript.json
