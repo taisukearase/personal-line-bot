@@ -1,4 +1,4 @@
-import { HEADER, REPLY_URL } from './consts/http'
+import { getHeaders, getReplyUrl } from './modules/http'
 import { getIsCompleted, setSheetValue } from './modules/spreadsheet'
 
 const getCompletedMessage = () => {
@@ -16,9 +16,11 @@ export function doPost(e: GoogleAppsScript.Events.DoPost) {
   const isCompleted = getIsCompleted()
 
   const replyText = !isCompleted ? getCompletedMessage() : getEchoMessage(message.text)
+  const replyUrl = getReplyUrl()
+  const headers = getHeaders()
 
-  UrlFetchApp.fetch(REPLY_URL, {
-    headers: HEADER,
+  UrlFetchApp.fetch(replyUrl, {
+    headers,
     method: 'post',
     payload: JSON.stringify({
       replyToken,

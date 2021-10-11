@@ -1,13 +1,15 @@
-import { HEADER, LINE_USER_ID, PUSH_URL } from './consts/http'
+import { getHeaders, getLineUserId, getPushUrl } from './modules/http'
 import { getIsCompleted, setSheetValue } from './modules/spreadsheet'
 import { getWasteTypeName } from './modules/waste'
 
 const makeOptions = (message: string): GoogleAppsScript.URL_Fetch.URLFetchRequestOptions => {
+  const headers = getHeaders()
+  const lineUserId = getLineUserId()
   return {
     method: 'post',
-    headers: HEADER,
+    headers,
     payload: JSON.stringify({
-      to: LINE_USER_ID,
+      to: lineUserId,
       messages: [
         {
           type: 'text',
@@ -17,13 +19,16 @@ const makeOptions = (message: string): GoogleAppsScript.URL_Fetch.URLFetchReques
     }),
   }
 }
+
+const pushUrl = getPushUrl()
+
 export function sendMorningMessage() {
   // フラグを初期化
   setSheetValue(false)
 
   const message = 'おはようさん！起きや！☀️\n薬もちゃんと飲むんやで〜'
   const options = makeOptions(message)
-  return UrlFetchApp.fetch(PUSH_URL, options)
+  return UrlFetchApp.fetch(pushUrl, options)
 }
 
 export function sendAfternoonMessage() {
@@ -34,7 +39,7 @@ export function sendAfternoonMessage() {
   const message = 'まだ飲んでへんやろ！ちゃんと飲むんやで〜'
   const options = makeOptions(message)
 
-  return UrlFetchApp.fetch(PUSH_URL, options)
+  return UrlFetchApp.fetch(pushUrl, options)
 }
 
 export function sendNightMessage() {
@@ -43,7 +48,7 @@ export function sendNightMessage() {
   const message = `今日もお疲れさん！\n明日は${wasteTypeName}の日やで!\n歯磨いてはよ寝なね〜🌙`
   const options = makeOptions(message)
 
-  return UrlFetchApp.fetch(PUSH_URL, options)
+  return UrlFetchApp.fetch(pushUrl, options)
 }
 
 export default null
