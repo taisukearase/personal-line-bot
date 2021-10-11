@@ -17,6 +17,7 @@ jobs:
       CLASPRC_ID_TOKEN: ${{ secrets.CLASPRC_ID_TOKEN }}
       CLASPRC_REFRESH_TOKEN: ${{ secrets.CLASPRC_REFRESH_TOKEN }}
       CLASP_SCRIPT_ID: ${{ secrets.CLASP_SCRIPT_ID }}
+      CLASP_DEPLOYMENT_ID: ${{ secrets.CLASP_DEPLOYMENT_ID }}
 
     steps:
       - name: Checkout
@@ -77,5 +78,5 @@ jobs:
       - name: Upload files
         run: npx @google/clasp push --force
 
-      - name: Add version
-        run: npx @google/clasp version ${{ steps.get_version.outputs.VERSION }}
+      - name: Deploy as web app
+        run: npx @google/clasp deploy --deploymentId ${CLASP_DEPLOYMENT_ID}
