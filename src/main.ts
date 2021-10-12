@@ -19,14 +19,13 @@ const HEADERS: GoogleAppsScript.URL_Fetch.HttpHeaders = {
 }
 
 // 明日は何のごみの日か
-const getWasteTypeName = () => {
-  const tomorrow = new Date()
-  tomorrow.setDate(new Date().getDate() + 1)
+const getWasteTypeName = (date: Date) => {
+  date.setDate(new Date().getDate() + 1)
 
-  const dayOfWeekNum = tomorrow.getDay()
+  const dayOfWeekNum = date.getDay()
 
   if (dayOfWeekNum === TUESDAY) {
-    const weekNum = Math.floor((tomorrow.getDate() - 1) / 7) + 1
+    const weekNum = Math.floor((date.getDate() - 1) / 7) + 1
 
     // 第1週または第3週の場合
     if (weekNum === 1 || weekNum === 3) {
@@ -46,9 +45,9 @@ const getWasteTypeName = () => {
   }
 }
 
-// push
-const makeOptions = (message: string): GoogleAppsScript.URL_Fetch.URLFetchRequestOptions => {
-  return {
+// Push
+const pushLineMessage = (message: string) => {
+  const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
     method: 'post',
     headers: HEADERS,
     payload: JSON.stringify({
@@ -61,40 +60,31 @@ const makeOptions = (message: string): GoogleAppsScript.URL_Fetch.URLFetchReques
       ],
     }),
   }
+  UrlFetchApp.fetch(PUSH_URL, options)
 }
 const range = SpreadsheetApp.getActiveSheet().getRange(1, 1)
 const isCompleted = Boolean(range.getValue())
 
 function sendMorningMessage() {
   // フラグを初期化
-  SpreadsheetApp.getActiveSheet().getRange(1, 1).setValue(false)
-
-  const message = 'おはようさん！起きや！☀️\n薬もちゃんと飲むんやで〜'
-  const options = makeOptions(message)
-  return UrlFetchApp.fetch(PUSH_URL, options)
+  range.setValue(false)
+  const message = 'おはようさん！起きや！☀️\nサプリもちゃんと飲むんやで〜'
+  pushLineMessage(message)
 }
 
 function sendAfternoonMessage() {
-  if (isCompleted) {
-    return null
-  }
-
+  if (isCompleted) return
   const message = 'まだ飲んでへんやろ！ちゃんと飲むんやで〜'
-  const options = makeOptions(message)
-
-  return UrlFetchApp.fetch(PUSH_URL, options)
+  pushLineMessage(message)
 }
 
-function sendNightMessage() {
-  const wasteTypeName = getWasteTypeName()
-
+function sendNightMessage(date = new Date()) {
+  const wasteTypeName = getWasteTypeName(date)
   const message = `今日もお疲れさん！\n明日は${wasteTypeName}の日やで!\n歯磨いてはよ寝なね〜🌙`
-  const options = makeOptions(message)
-
-  return UrlFetchApp.fetch(PUSH_URL, options)
+  pushLineMessage(message)
 }
 
-// reply
+// Reply
 const getCompletedMessage = () => {
   // 未完了なら褒めてシートを更新
   range.setValue(true)
@@ -123,9 +113,4 @@ function doPost(e: GoogleAppsScript.Events.DoPost) {
       ],
     }),
   })
-
-  return ContentService.createTextOutput(JSON.stringify({ content: 'post ok' })).setMimeType(
-    ContentService.MimeType.JSON
-  )
 }
-export default null
