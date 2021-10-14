@@ -9,10 +9,10 @@ const SATURDAY = 6
 const BASE_URL = 'https://api.line.me/v2/bot/message'
 const REPLY_URL = `${BASE_URL}/reply`
 const PUSH_URL = `${BASE_URL}/push`
-const LINE_CHANNEL_ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(
+const LINE_CHANNEL_ACCESS_TOKEN = PropertiesService?.getScriptProperties()?.getProperty(
   'LINE_CHANNEL_ACCESS_TOKEN'
 )
-const LINE_USER_ID = PropertiesService.getScriptProperties().getProperty('LINE_USER_ID')
+const LINE_USER_ID = PropertiesService?.getScriptProperties()?.getProperty('LINE_USER_ID')
 const HEADERS: GoogleAppsScript.URL_Fetch.HttpHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
   Authorization: `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}`,
@@ -20,7 +20,7 @@ const HEADERS: GoogleAppsScript.URL_Fetch.HttpHeaders = {
 
 // 明日は何のごみの日か
 const getWasteTypeName = (date: Date) => {
-  date.setDate(new Date().getDate() + 1)
+  date.setDate(date.getDate() + 1)
 
   const dayOfWeekNum = date.getDay()
 
@@ -44,7 +44,6 @@ const getWasteTypeName = (date: Date) => {
       return '回収なし'
   }
 }
-
 // Push
 const pushLineMessage = (message: string) => {
   const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
@@ -62,8 +61,8 @@ const pushLineMessage = (message: string) => {
   }
   UrlFetchApp.fetch(PUSH_URL, options)
 }
-const range = SpreadsheetApp.getActiveSheet().getRange(1, 1)
-const isCompleted = Boolean(range.getValue())
+const range = SpreadsheetApp?.getActiveSheet()?.getRange(1, 1)
+const isCompleted = Boolean(range?.getValue())
 
 function sendMorningMessage() {
   // フラグを初期化
