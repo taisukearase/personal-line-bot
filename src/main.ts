@@ -19,7 +19,7 @@ const HEADERS: GoogleAppsScript.URL_Fetch.HttpHeaders = {
 }
 
 // 明日は何のごみの日か
-const getWasteTypeName = (date = new Date()) => {
+const getWasteTypeName = (date: Date) => {
   date.setDate(date.getDate() + 1)
 
   const dayOfWeekNum = date.getDay()
@@ -77,8 +77,8 @@ function sendAfternoonMessage() {
   pushLineMessage(message)
 }
 
-function sendNightMessage(date = new Date()) {
-  const wasteTypeName = getWasteTypeName(date)
+function sendNightMessage() {
+  const wasteTypeName = getWasteTypeName(new Date())
   const message = `今日もお疲れさん！\n明日は${wasteTypeName}の日やで!\n歯磨いてはよ寝なね〜🌙`
   pushLineMessage(message)
 }
