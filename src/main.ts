@@ -19,7 +19,7 @@ const HEADERS: GoogleAppsScript.URL_Fetch.HttpHeaders = {
 }
 
 // 明日は何のごみの日か
-const getWasteTypeName = (date: Date) => {
+const getWasteTypeName = (date = new Date()) => {
   date.setDate(date.getDate() + 1)
 
   const dayOfWeekNum = date.getDay()
